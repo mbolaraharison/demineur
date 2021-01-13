@@ -5,7 +5,7 @@ public class Cell {
     public static final int BOMB = -1;
     public static final int BLANK = 0;
 
-    private int value;
+    private int value; // The number of bombs around this cell ( touching this cell )
     private boolean isFlagged;
     private boolean isRevealed;
 

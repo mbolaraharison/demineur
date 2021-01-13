@@ -68,6 +68,34 @@ public class MineGridRecyclerAdapter extends RecyclerView.Adapter<MineGridRecycl
                 }
             });
 
+           // Only reveal if the Cell is in the Reveal State
+            if(cell.isRevealed()){
+                // Change cell state depending on its value
+                if(cell.getValue() == Cell.BOMB)
+                {
+                    valueTextView.setText(R.string.bomb); // Use Bomb Emoji
+                }else if (cell.getValue() == Cell.BLANK)
+                {
+                    valueTextView.setText("");
+                    itemView.setBackgroundColor(Color.WHITE);
+                }else{
+                    // Check the number of Bombs Around
+                    valueTextView.setText(String.valueOf(cell.getValue()));
+                    switch (cell.getValue())
+                    {
+                        case 1: // 1 Bomb Around
+                            valueTextView.setTextColor(Color.BLUE);
+                            break;
+                        case 2: // 2 Bombs Around
+                            valueTextView.setTextColor(Color.GREEN);
+                            break;
+                        case 3: // 3 Bombs Around : Risk
+                            valueTextView.setTextColor(Color.RED);
+                            break;
+                    }
+                }
+            }
+
 
         }
     }
