@@ -7,18 +7,20 @@ public class MineSweeperGame {
     private MineGrid mineGrid;
     private boolean clearMode;
     private boolean gameIsOver;
+    private boolean isTimeOver;
 
     public MineSweeperGame(int size,int nbrOfBombs)
     {
         this.clearMode = true;
+        this.isTimeOver = false;
         mineGrid = new MineGrid(size);
         // Generate the grids
         mineGrid.generateGrid(nbrOfBombs);
     }
     public void handleCellClick(Cell c)
     {
-        // Check if the game is over before clearing any cell
-        if(!isGameIsOver())
+        // Check if the game is not over , hasn't been won and the time is not over  before clearing any cell
+        if(!isGameIsOver() && !isGameWon() && !isTimeOver)
         {
             if(clearMode)
             {
@@ -90,4 +92,32 @@ public class MineSweeperGame {
     public boolean isGameIsOver() {
         return gameIsOver;
     }
+
+    public boolean isGameWon() {
+       int nbrUnrevealed=0;
+
+       // Caluclate the number of unrevealed cells
+       for(Cell c: getMineGrid().getCells())
+       {
+           // Check if the cell is not a bomb neither a blank and it's not revealed
+           if(c.getValue() != Cell.BOMB && c.getValue()!= Cell.BLANK && !c.isRevealed())
+           {
+               nbrUnrevealed++;
+           }
+       }
+       if(nbrUnrevealed == 0)
+       {
+           return true;
+       }else
+       {
+           return false;
+       }
+    }
+
+    //Function that will be called from the main
+    public void timeExpired(){
+        isTimeOver = true;
+    }
+
+
 }

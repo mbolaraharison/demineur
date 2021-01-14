@@ -59,7 +59,7 @@ public class MineGridRecyclerAdapter extends RecyclerView.Adapter<MineGridRecycl
 
         public void bind(final Cell cell) {
             // Set the background to gray
-            itemView.setBackgroundColor(Color.GRAY);
+            itemView.setBackgroundColor(Color.DKGRAY);
             // Set up a click listener that will invoke onCellClick Methods
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
