@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 public class MineGrid {
-    private List<Cell> cells;
+    private List<Cell> cells; // ListofCells
     private int size; // number os cells in lines and columns
 
     public MineGrid(int size)

@@ -11,6 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+
+
+/**
+ * @author Jarrod Lilkendey
+ */
 public class MineGridRecyclerAdapter extends RecyclerView.Adapter<MineGridRecyclerAdapter.MineTileViewHolder> {
     private List<Cell> cells;
     private OnCellClickListener listener;
