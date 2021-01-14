@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,7 +29,7 @@ public class MineGridRecyclerAdapter extends RecyclerView.Adapter<MineGridRecycl
     @NonNull
     @Override
     public MineTileViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Create a holder : that will hold our cell
+        // Create a holder : that will hold our cell --- Creation of an Item View
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cell, parent, false);
         return new MineTileViewHolder(itemView);
     }
@@ -55,16 +56,19 @@ public class MineGridRecyclerAdapter extends RecyclerView.Adapter<MineGridRecycl
     class MineTileViewHolder extends RecyclerView.ViewHolder {
         // Text field that will display ( Bomb , Flag, ...)
         TextView valueTextView;
+        LinearLayout wrapperHexagone;
         // constructor
         public MineTileViewHolder(@NonNull View itemView) {
             super(itemView);
             // Set up the field by finding the id
             valueTextView = itemView.findViewById(R.id.item_cell_value);
+            wrapperHexagone = itemView.findViewById(R.id.id_wrapperHexagone);
         }
 
         public void bind(final Cell cell) {
             // Set the background to gray
-            itemView.setBackgroundColor(Color.DKGRAY);
+            itemView.setBackgroundColor(Color.WHITE);
+            wrapperHexagone.setBackgroundColor(Color.GRAY);
             // Set up a click listener that will invoke onCellClick Methods
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -83,6 +87,7 @@ public class MineGridRecyclerAdapter extends RecyclerView.Adapter<MineGridRecycl
                 {
                     valueTextView.setText("");
                     itemView.setBackgroundColor(Color.WHITE);
+                    wrapperHexagone.setBackgroundColor(Color.WHITE);
                 }else{
                     // Check the number of Bombs Around
                     valueTextView.setText(String.valueOf(cell.getValue()));
@@ -90,6 +95,7 @@ public class MineGridRecyclerAdapter extends RecyclerView.Adapter<MineGridRecycl
                     {
                         case 1: // 1 Bomb Around
                             valueTextView.setTextColor(Color.BLUE);
+
                             break;
                         case 2: // 2 Bombs Around
                             valueTextView.setTextColor(Color.GREEN);

@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="32dp"
     android:layout_height="32dp"
     android:layout_margin="2dp">
 
-    <TextView
-        android:id="@+id/item_cell_value"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:textAlignment="center"
-        android:textSize="18sp" />
+
+                <com.github.florent37.shapeofview.shapes.PolygonView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:shape_polygon_noOfSides="6"
+                    >
+
+                        <LinearLayout
+                            android:id="@+id/id_wrapperHexagone"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/item_cell_value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:textAlignment="center"
+                                    android:textSize="18sp" />
+                        </LinearLayout>
+                </com.github.florent37.shapeofview.shapes.PolygonView>
+
 
 </LinearLayout>
