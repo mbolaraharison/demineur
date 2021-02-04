@@ -1,8 +1,10 @@
 package com.mbola.deminer;
 
+import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.widget.TextView;
@@ -10,17 +12,25 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+
 import com.mbola.deminer.classes.Grid;
 import com.mbola.deminer.listeners.CustomClickListener;
 import com.mbola.deminer.listeners.CustomTouchListener;
+import com.mbola.deminer.listeners.ResultsListListener;
+
+import java.util.HashMap;
+
+import services.Service;
 
 public class MainActivity extends AppCompatActivity {
 
     private Grid grid;
-    private TextView playButton,timer;
+    private TextView playButton,timer, resultsList;
     private int secondsElapsed;
     private boolean timerStarted;
     private CountDownTimer counter;
+    public static HashMap<Integer, int[]> LEVEL_PARAMETERS;
 
     private boolean isGameWon;
     private boolean isGameOver;
@@ -30,44 +40,94 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getRealSize(size);
-        int width = size.x;
-        int height = size.y;
+        LEVEL_PARAMETERS = new HashMap<>();
+        LEVEL_PARAMETERS.put(1, new int[]{60000, 8, 5});
+        LEVEL_PARAMETERS.put(2, new int[]{40000, 9, 10});
+        LEVEL_PARAMETERS.put(3, new int[]{25000, 10, 25});
 
         playButton = findViewById(R.id.activity_main_smiley);
+        resultsList = findViewById(R.id.link_results);
         timer = findViewById(R.id.activity_main_timer);
 
-        playButton.setOnClickListener(new CustomClickListener(playButton, timer, secondsElapsed));
+        secondsElapsed = 0;
+        playButton.setOnClickListener(new CustomClickListener(this, this, playButton, timer, secondsElapsed, 3));
+
+        resultsList.setOnClickListener(new ResultsListListener(this));
 
         timerStarted = false;
         isGameOver = false;
         isGameWon = false;
+    }
 
-        counter = new CountDownTimer(40000L,1000) {
-            // Add one after each second
-            @Override
-            public void onTick(long l) {
-                secondsElapsed+= 1;
-                timer.setText(String.format("%03d",secondsElapsed));
-            }
+    public int[] getWindowDimensions() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getRealSize(size);
+        int[] dimensions = new int[]{size.x, size.y};
+        return dimensions;
+    }
 
-            @Override
-            public void onFinish() {
-                isGameOver = true;
-                Toast.makeText(getApplicationContext(),"Game is Over : Time is UP",Toast.LENGTH_SHORT).show();
-            }
-        };
+    public Grid getGrid() {
+        return grid;
+    }
 
-        ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.layout);
+    public void setGrid(Grid grid) {
+        this.grid = grid;
+    }
 
-        View templateView = findViewById(R.id.kitty01);
+    public TextView getPlayButton() {
+        return playButton;
+    }
 
-        grid = new Grid(this, templateView, layout, 10, 10);
+    public void setPlayButton(TextView playButton) {
+        this.playButton = playButton;
+    }
 
-        for (int i = 0; i < grid.getCells().size(); i++) {
-            grid.getCells().get(i).getPolygonImageView().setOnTouchListener(new CustomTouchListener(grid, grid.getCells().get(i)));
-        }
+    public TextView getTimer() {
+        return timer;
+    }
+
+    public void setTimer(TextView timer) {
+        this.timer = timer;
+    }
+
+    public int getSecondsElapsed() {
+        return secondsElapsed;
+    }
+
+    public void setSecondsElapsed(int secondsElapsed) {
+        this.secondsElapsed = secondsElapsed;
+    }
+
+    public boolean isTimerStarted() {
+        return timerStarted;
+    }
+
+    public void setTimerStarted(boolean timerStarted) {
+        this.timerStarted = timerStarted;
+    }
+
+    public CountDownTimer getCounter() {
+        return counter;
+    }
+
+    public void setCounter(CountDownTimer counter) {
+        this.counter = counter;
+    }
+
+    public boolean isGameWon() {
+        return isGameWon;
+    }
+
+    public void setGameWon(boolean gameWon) {
+        isGameWon = gameWon;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
     }
 }

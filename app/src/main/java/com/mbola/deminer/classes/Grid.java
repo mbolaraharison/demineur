@@ -1,8 +1,13 @@
 package com.mbola.deminer.classes;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.mbola.deminer.R;
 
@@ -10,11 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import services.Service;
+
 public class Grid {
     private List<Cell> cells;
     private int bombsNumber;
 
-    public Grid(Context context, View templateView, ViewGroup viewGroup, int size, int bombsNumber) {
+    public Grid(Context context, View templateView, int[] windowDimensions, ViewGroup viewGroup, int size, int bombsNumber) {
+        // Remove views if they already exist
+        int id = 1;
+        while (((ConstraintLayout)viewGroup).getViewById(id) != null) {
+            viewGroup.removeView(((ConstraintLayout)viewGroup).getViewById(id));
+            id++;
+        }
+
         this.bombsNumber = bombsNumber;
         this.cells = new ArrayList<>(size*size);
 
@@ -54,7 +68,7 @@ public class Grid {
                     this.cells.get(i).setNeighbours(new Cell[] {
                             this.cells.get(i-size-1),
                             this.cells.get(i-size),
-                            i%size != 9 ? this.cells.get(i-size+1) : null,
+                            i%size != (size-1) ? this.cells.get(i-size+1) : null,
                             null,
                             null,
                             this.cells.get(i-1)
@@ -62,11 +76,12 @@ public class Grid {
                     this.cells.get(i-1).setTopRightNeighbour(this.cells.get(i));
                     this.cells.get(i-size-1).setBottomRightNeighbour(this.cells.get(i));
                     this.cells.get(i-size).setBottomNeighbour(this.cells.get(i));
-                    if (i%size != 9) {
+                    if (i%size != (size-1)) {
                         this.cells.get(i-size+1).setBottomLeftNeighbour(this.cells.get(i));
                     }
                 }
             }
+            // This is for all cells at odd position
             if (i%size != 0 && (i%size)%2 == 0) {
                 this.cells.get(i).setX(this.cells.get(i-1).getX()+20+(this.cells.get(i-1).getDiameter(context)/2));
                 this.cells.get(i).setY(this.cells.get(i-1).getY()-20+(this.cells.get(i-1).getDiameter(context)/2));
@@ -94,7 +109,15 @@ public class Grid {
                     this.cells.get(i-size).setBottomNeighbour(this.cells.get(i));
                 }
             }
-            viewGroup.addView(this.cells.get(i).getPolygonImageView(), templateView.getLayoutParams());
+            float gridWidth = this.getGridWidth(context, size);
+            int leftMargin = (int) ((windowDimensions[0]- (int) gridWidth)/2);
+
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) templateView.getLayoutParams();
+            layoutParams.topMargin = 100;
+            layoutParams.leftMargin = leftMargin;
+            //this.cells.get(i).getPolygonImageView().setVisibility(View.GONE);
+
+            viewGroup.addView(this.cells.get(i).getPolygonImageView(), layoutParams);
         }
         // Put bombs
         this.putBombs(bombsNumber);
@@ -163,4 +186,11 @@ public class Grid {
         }
         return false;
     }
+
+    public float getGridWidth(Context context, int size) {
+        return ((Service.toPixel(context, 50)*size)-(Service.toPixel(context, 20)*(size-2)));
+    }
+
+    //public float getGridHeight(Context context, int size)
+
 }
