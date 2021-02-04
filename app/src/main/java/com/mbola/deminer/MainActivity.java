@@ -1,52 +1,29 @@
 package com.mbola.deminer;
 
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.shapes.Shape;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.style.ClickableSpan;
-import android.util.TypedValue;
+import android.os.CountDownTimer;
 import android.view.Display;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.Toolbar;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.mbola.deminer.shapes.PaperPolygonShape;
-import com.mbola.deminer.shapes.RegularPolygonShape;
-import com.mbola.deminer.shapes.StarPolygonShape;
-import com.mbola.deminer.views.PolygonImageView;
+import com.mbola.deminer.classes.Grid;
+import com.mbola.deminer.listeners.CustomClickListener;
+import com.mbola.deminer.listeners.CustomTouchListener;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ImageView testHexagon;
-    private Shape hexagonShape;
+    private Grid grid;
+    private TextView playButton,timer;
+    private int secondsElapsed;
+    private boolean timerStarted;
+    private CountDownTimer counter;
 
-    /*@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        this.testHexagon = findViewById(R.id.test_hexagon);
-        this.testHexagon.setBackground(new DrawPolygon(Color.RED, 3));
-
-        this.testHexagon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("HELLO : ");
-            }
-        });
-    }*/
+    private boolean isGameWon;
+    private boolean isGameOver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,44 +36,38 @@ public class MainActivity extends AppCompatActivity {
         int width = size.x;
         int height = size.y;
 
-        PolygonImageView kitty = (PolygonImageView) findViewById(R.id.kitty01);
-        kitty.setPadding(0, 0 , 0, 0);
-        float diameter = toPixel(Math.abs(kitty.getPolygonShapeSpec().getDiameter()));
-        kitty.setX((width/2)-diameter);
+        playButton = findViewById(R.id.activity_main_smiley);
+        timer = findViewById(R.id.activity_main_timer);
 
-        ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.layout);
-        for(int i=0; i<3; i++){
-            PolygonImageView view = new PolygonImageView(this);
-            view.setId(i);
-            view.setImageResource(R.drawable.cat07);
-            view.setPadding(0,0,0,0);
+        playButton.setOnClickListener(new CustomClickListener(playButton, timer, secondsElapsed));
 
-            view.setX(kitty.getX()-(toPixel(diameter)/2));
-            view.setY(kitty.getY()+(toPixel(diameter)/2));
-            if (i==1) {
-                view.setX(kitty.getX()+(toPixel(diameter)/2));
-            } else if (i==2) {
-                view.setX(kitty.getX());
-                view.setY(kitty.getY()+(toPixel(diameter)));
+        timerStarted = false;
+        isGameOver = false;
+        isGameWon = false;
+
+        counter = new CountDownTimer(40000L,1000) {
+            // Add one after each second
+            @Override
+            public void onTick(long l) {
+                secondsElapsed+= 1;
+                timer.setText(String.format("%03d",secondsElapsed));
             }
 
-            view.addShadow(10f, 0f, 0f, Color.RED);
-            view.addBorder(5, Color.WHITE);
-            view.setCornerRadius(25);
-            view.setVertices(6);
+            @Override
+            public void onFinish() {
+                isGameOver = true;
+                Toast.makeText(getApplicationContext(),"Game is Over : Time is UP",Toast.LENGTH_SHORT).show();
+            }
+        };
 
-            view.setPolygonShape(new RegularPolygonShape());
-            layout.addView(view, kitty.getLayoutParams());
+        ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.layout);
+
+        View templateView = findViewById(R.id.kitty01);
+
+        grid = new Grid(this, templateView, layout, 10, 10);
+
+        for (int i = 0; i < grid.getCells().size(); i++) {
+            grid.getCells().get(i).getPolygonImageView().setOnTouchListener(new CustomTouchListener(grid, grid.getCells().get(i)));
         }
-
-    }
-
-    private float toPixel(float value) {
-        Resources r = getResources();
-        return (float) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                value,
-                r.getDisplayMetrics()
-        );
     }
 }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Deminer</string>
+    <string name="smiley">🎮</string>
+    <string name="flag">🚩</string>
+    <string name="bomb">💣</string>
+    <string name="default_count">000</string>
+    <string name="default_game_status">GAME STARTED</string>
 </resources>

@@ -40,7 +40,7 @@ import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.ImageView;
+import android.view.View;
 
 import com.mbola.deminer.R;
 import com.mbola.deminer.shapes.PolygonShape;
@@ -68,6 +68,8 @@ public class PolygonImageView extends androidx.appcompat.widget.AppCompatImageVi
     private PolygonShape mPolygonShape;
     private PolygonShapeSpec mPolygonShapeSpec;
 
+    private String text;
+
     private int canvasWidth, canvasHeight;
 
     public PolygonImageView(Context context) {
@@ -81,6 +83,7 @@ public class PolygonImageView extends androidx.appcompat.widget.AppCompatImageVi
     public PolygonImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        text = "";
         mPolygonShapeSpec = new PolygonShapeSpec();
 
         TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs,
@@ -228,9 +231,12 @@ public class PolygonImageView extends androidx.appcompat.widget.AppCompatImageVi
                     mPaint);
                 break;
             default: //POLYGON
+                mPaint.setColor(Color.rgb(0, 0, 0));
+                mPaint.setTextAlign(Paint.Align.CENTER);
+                mPaint.setTextSize(50);
+                canvas.drawText(text, mPolygonShapeSpec.getCenterX(), mPolygonShapeSpec.getCenterY()+15, mPaint);
                 if (mPolygonShapeSpec.hasShadow() || mPolygonShapeSpec.hasBorder())
                     canvas.drawPath(mPath, mBorderPaint);
-                canvas.drawPath(mPath, mPaint);
         }
     }
 
@@ -323,6 +329,23 @@ public class PolygonImageView extends androidx.appcompat.widget.AppCompatImageVi
         mPaint.setColorFilter(cf);
         mBorderPaint.setColorFilter(cf);
         invalidate();
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+        invalidate();
+    }
+
+    public Paint getmBorderPaint() {
+        return mBorderPaint;
+    }
+
+    public void setmBorderPaint(Paint mBorderPaint) {
+        this.mBorderPaint = mBorderPaint;
     }
 
     /**
@@ -598,6 +621,10 @@ public class PolygonImageView extends androidx.appcompat.widget.AppCompatImageVi
         invalidate();
     }
 
+    public void repaint(){  //method to repaint this view
+        invalidate();
+    }
+
     /**
      * Transforms a drawable into a bitmap.
      *
@@ -652,7 +679,7 @@ public class PolygonImageView extends androidx.appcompat.widget.AppCompatImageVi
         float cx = this.getPolygonShapeSpec().getCenterX();
         float cy = this.getPolygonShapeSpec().getCenterY();
         float rayon = (this.getPolygonShapeSpec().getDiameter())/2;
-        rayon = (float) (rayon - (rayon*0.1));
+        rayon = (float) (rayon);
 
         float mouseX = event.getX();
         float mouseY = event.getY();
