@@ -7,49 +7,83 @@
     android:id="@+id/layout"
     tools:context=".MainActivity">
 
-    <com.mbola.deminer.views.PolygonImageView
-        android:id="@+id/kitty01"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/cat07"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:poly_border="true"
-        app:poly_border_color="@android:color/white"
-        app:poly_border_width="5dp"
-        app:poly_corner_radius="25"
-        app:poly_rotation_angle="0"
-        app:poly_shadow="true"
-        app:poly_shadow_color="#f01"
-        app:poly_vertices="6"
-        tools:ignore="MissingConstraints" />
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toTopOf="@id/kitty01"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/activity_main_flagsleft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:text="@string/default_count"
+            android:textSize="48sp" />
+
+        <TextView
+            android:id="@+id/activity_main_smiley"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/smiley"
+            android:textSize="64sp" />
+
+        <TextView
+            android:id="@+id/activity_main_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:text="@string/default_count"
+            android:textSize="48sp" />
+
+    </LinearLayout>
+        <com.mbola.deminer.views.PolygonImageView
+            android:id="@+id/kitty01"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/cat07"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
+            app:poly_border="true"
+            app:poly_border_color="@android:color/white"
+            app:poly_border_width="5dp"
+            app:poly_corner_radius="0"
+            app:poly_rotation_angle="0"
+            app:poly_shadow="true"
+            app:poly_shadow_color="#f01"
+            app:poly_vertices="6"
+            tools:ignore="MissingConstraints"></com.mbola.deminer.views.PolygonImageView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout_activity_main_text_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <TextView
+            android:id="@+id/activity_main_text_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:text="@string/default_game_status"
+            android:textSize="25dp" />
+        <TextView
+            android:id="@+id/link_results"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RESULTS LIST"
+            android:textSize="25dp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-    <!--
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
-
-        <ImageView
-            android:id="@+id/test_hexagon"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:contentDescription="This is an hexagon test"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/polygon_shape"
-            android:scaleType="fitXY"
-            android:adjustViewBounds="true"
-            android:layout_gravity="center"
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>-->

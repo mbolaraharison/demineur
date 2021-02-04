@@ -1,102 +1,133 @@
 package com.mbola.deminer;
 
-import android.content.res.Resources;
-import android.graphics.Color;
+import android.app.Activity;
 import android.graphics.Point;
-import android.graphics.drawable.shapes.Shape;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.style.ClickableSpan;
-import android.util.TypedValue;
+import android.os.CountDownTimer;
+import android.util.DisplayMetrics;
 import android.view.Display;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.Toolbar;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
-import com.mbola.deminer.shapes.PaperPolygonShape;
-import com.mbola.deminer.shapes.RegularPolygonShape;
-import com.mbola.deminer.shapes.StarPolygonShape;
-import com.mbola.deminer.views.PolygonImageView;
+import com.mbola.deminer.classes.Grid;
+import com.mbola.deminer.listeners.CustomClickListener;
+import com.mbola.deminer.listeners.CustomTouchListener;
+import com.mbola.deminer.listeners.ResultsListListener;
+
+import java.util.HashMap;
+
+import services.Service;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ImageView testHexagon;
-    private Shape hexagonShape;
+    private Grid grid;
+    private TextView playButton,timer, resultsList;
+    private int secondsElapsed;
+    private boolean timerStarted;
+    private CountDownTimer counter;
+    public static HashMap<Integer, int[]> LEVEL_PARAMETERS;
 
-    /*@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        this.testHexagon = findViewById(R.id.test_hexagon);
-        this.testHexagon.setBackground(new DrawPolygon(Color.RED, 3));
-
-        this.testHexagon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("HELLO : ");
-            }
-        });
-    }*/
+    private boolean isGameWon;
+    private boolean isGameOver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        LEVEL_PARAMETERS = new HashMap<>();
+        LEVEL_PARAMETERS.put(1, new int[]{60000, 8, 5});
+        LEVEL_PARAMETERS.put(2, new int[]{40000, 9, 10});
+        LEVEL_PARAMETERS.put(3, new int[]{25000, 10, 25});
+
+        playButton = findViewById(R.id.activity_main_smiley);
+        resultsList = findViewById(R.id.link_results);
+        timer = findViewById(R.id.activity_main_timer);
+
+        secondsElapsed = 0;
+        playButton.setOnClickListener(new CustomClickListener(this, this, playButton, timer, secondsElapsed, 3));
+
+        resultsList.setOnClickListener(new ResultsListListener(this));
+
+        timerStarted = false;
+        isGameOver = false;
+        isGameWon = false;
+    }
+
+    public int[] getWindowDimensions() {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getRealSize(size);
-        int width = size.x;
-        int height = size.y;
-
-        PolygonImageView kitty = (PolygonImageView) findViewById(R.id.kitty01);
-        kitty.setPadding(0, 0 , 0, 0);
-        float diameter = toPixel(Math.abs(kitty.getPolygonShapeSpec().getDiameter()));
-        kitty.setX((width/2)-diameter);
-
-        ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.layout);
-        for(int i=0; i<3; i++){
-            PolygonImageView view = new PolygonImageView(this);
-            view.setId(i);
-            view.setImageResource(R.drawable.cat07);
-            view.setPadding(0,0,0,0);
-
-            view.setX(kitty.getX()-(toPixel(diameter)/2));
-            view.setY(kitty.getY()+(toPixel(diameter)/2));
-            if (i==1) {
-                view.setX(kitty.getX()+(toPixel(diameter)/2));
-            } else if (i==2) {
-                view.setX(kitty.getX());
-                view.setY(kitty.getY()+(toPixel(diameter)));
-            }
-
-            view.addShadow(10f, 0f, 0f, Color.RED);
-            view.addBorder(5, Color.WHITE);
-            view.setCornerRadius(25);
-            view.setVertices(6);
-
-            view.setPolygonShape(new RegularPolygonShape());
-            layout.addView(view, kitty.getLayoutParams());
-        }
-
+        int[] dimensions = new int[]{size.x, size.y};
+        return dimensions;
     }
 
-    private float toPixel(float value) {
-        Resources r = getResources();
-        return (float) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                value,
-                r.getDisplayMetrics()
-        );
+    public Grid getGrid() {
+        return grid;
+    }
+
+    public void setGrid(Grid grid) {
+        this.grid = grid;
+    }
+
+    public TextView getPlayButton() {
+        return playButton;
+    }
+
+    public void setPlayButton(TextView playButton) {
+        this.playButton = playButton;
+    }
+
+    public TextView getTimer() {
+        return timer;
+    }
+
+    public void setTimer(TextView timer) {
+        this.timer = timer;
+    }
+
+    public int getSecondsElapsed() {
+        return secondsElapsed;
+    }
+
+    public void setSecondsElapsed(int secondsElapsed) {
+        this.secondsElapsed = secondsElapsed;
+    }
+
+    public boolean isTimerStarted() {
+        return timerStarted;
+    }
+
+    public void setTimerStarted(boolean timerStarted) {
+        this.timerStarted = timerStarted;
+    }
+
+    public CountDownTimer getCounter() {
+        return counter;
+    }
+
+    public void setCounter(CountDownTimer counter) {
+        this.counter = counter;
+    }
+
+    public boolean isGameWon() {
+        return isGameWon;
+    }
+
+    public void setGameWon(boolean gameWon) {
+        isGameWon = gameWon;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
     }
 }
