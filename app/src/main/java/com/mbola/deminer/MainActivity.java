@@ -76,8 +76,12 @@ public class MainActivity extends AppCompatActivity {
         resultsList = findViewById(R.id.link_results);
         timer = findViewById(R.id.activity_main_timer);
 
+
         secondsElapsed = 0;
         playButton.setOnClickListener(new CustomClickListener(this, this, playButton, timer, secondsElapsed, 3));
+
+
+
 
 
         scoreButton.setOnClickListener(new View.OnClickListener(){
@@ -97,13 +101,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        List<scoreItem> scoreItemList = new ArrayList<>();
-        scoreItemList.add(new scoreItem("24/01/2021","54,30"));
-        scoreItemList.add(new scoreItem("02/01/2021","20,30"));
-        scoreItemList.add(new scoreItem("02/02/2021","46,30"));
 
-        ListView scoreListView = findViewById(R.id.score_list);
-        scoreListView.setAdapter(new scoreItemAdapter(this,scoreItemList));
 
 
         timerStarted = false;
