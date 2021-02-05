@@ -83,6 +83,7 @@ public class Service {
 
     public static List<Result> getAllResultsFromDb (MainActivity activity) {
         /*retrieve data from database */
+        System.out.println("CURSOR : "+activity.getDb());
         Cursor c = activity.getDb().rawQuery("SELECT * FROM " + MainActivity.TABLE_NAME +" ORDER BY date desc", null);
 
         int dateColumn = c.getColumnIndex("date");

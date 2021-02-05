@@ -13,26 +13,26 @@ import org.w3c.dom.Text;
 
 import java.util.List;
 
-public class scoreItemAdapter extends BaseAdapter {
+public class ResultsListAdapter extends BaseAdapter {
 
     private Context context;
-    private List<scoreItem> scoreItemList;
+    List<Result> resultsList;
     private LayoutInflater inflater;
 
 
-    public scoreItemAdapter(Context context,List<scoreItem> scoreItemList){
+    public ResultsListAdapter(Context context, List<Result> resultsList){
         this.context = context;
-        this.scoreItemList = scoreItemList;
+        this.resultsList = resultsList;
         this.inflater = LayoutInflater.from(context);
     }
     @Override
     public int getCount() {
-        return scoreItemList.size();
+        return resultsList != null ? resultsList.size() : 0;
     }
 
     @Override
-    public scoreItem getItem(int position) {
-        return scoreItemList.get(position);
+    public Result getItem(int position) {
+        return resultsList.get(position);
     }
 
     @Override
@@ -42,14 +42,17 @@ public class scoreItemAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-
         view = inflater.inflate(R.layout.adapter_item, null);
-        scoreItem currentItem = getItem(position);
+        Result currentItem = getItem(position);
         String itemDate = currentItem.getDate();
-        String itemScore = currentItem.getScore();
+        String itemLevel = String.valueOf(currentItem.getLevel());
+        String itemScore = String.valueOf(currentItem.getScore());
 
         TextView itemDateView = view.findViewById(R.id.item_date);
         itemDateView.setText(itemDate);
+
+        TextView itemLevelView = view.findViewById(R.id.level);
+        itemLevelView.setText(itemLevel);
 
         TextView itemScoreView = view.findViewById(R.id.score);
         itemScoreView.setText(itemScore);

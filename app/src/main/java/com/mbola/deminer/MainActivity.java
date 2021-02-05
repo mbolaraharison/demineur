@@ -6,28 +6,26 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mbola.deminer.classes.Grid;
 import com.mbola.deminer.classes.CustomPopUp;
+import com.mbola.deminer.classes.Result;
 import com.mbola.deminer.listeners.CustomClickListener;
 import com.mbola.deminer.listeners.CustomSpinnerSelectListener;
 
 import java.util.HashMap;
+import java.util.List;
 
 import com.mbola.deminer.listeners.ResultsListListener;
 import com.mbola.deminer.services.BackgroundMusicService;
+
+import services.Service;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private Button scoreButton;
     private CustomPopUp customPopUp;
 
+    private List<Result> resultsList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +70,11 @@ public class MainActivity extends AppCompatActivity {
         timer = findViewById(R.id.activity_main_timer);
         levelsSpinner = findViewById(R.id.levels_spinner);
 
+        // Open or create database
+        this.db = this.openOrCreateDatabase(DB_NAME, MODE_PRIVATE, null);
+
+        this.resultsList = Service.getAllResultsFromDb(this);
+
         this.customPopUp = new CustomPopUp(this);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -84,8 +89,6 @@ public class MainActivity extends AppCompatActivity {
         secondsElapsed = 60;
         playButton.setOnClickListener(new CustomClickListener(this, playButton, timer, secondsElapsed));
 
-        //resultsList.setOnClickListener(new ResultsListListener(this));
-
         scoreButton.setOnClickListener(new ResultsListListener(this));
 
         timerStarted = false;
@@ -95,19 +98,6 @@ public class MainActivity extends AppCompatActivity {
         // Handle music background
         musicInent = new Intent(getApplicationContext(), BackgroundMusicService.class);
         startService(new Intent(getApplicationContext(),BackgroundMusicService.class));
-
-        // Open or create database
-        this.db = this.openOrCreateDatabase(DB_NAME, MODE_PRIVATE, null);
-
-        //Service.addResultToDb(this, new Result(1, 45));
-
-        //Service.truncateTable(this);
-
-//        List<Result> res = Service.getAllResultsFromDb(this);
-//
-//        for (int i=0; i<res.size(); i++) {
-//            System.out.println("DATE : "+res.get(i).getDate()+" LEVEL : "+res.get(i).getLevel()+" SCORE : "+res.get(i).getScore());
-//        }
     }
 
     public int[] getWindowDimensions() {
@@ -236,5 +226,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void setCustomPopUp(CustomPopUp customPopUp) {
         this.customPopUp = customPopUp;
+    }
+
+    public List<Result> getResultsList() {
+        return resultsList;
+    }
+
+    public void setResultsList(List<Result> resultsList) {
+        this.resultsList = resultsList;
     }
 }

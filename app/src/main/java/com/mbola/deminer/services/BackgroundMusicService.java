@@ -25,8 +25,6 @@ public class BackgroundMusicService extends Service{
     }
 
     public void onCreate(){
-        Toast.makeText(this,"Service created", Toast.LENGTH_SHORT).show();
-
         player = MediaPlayer.create(getApplicationContext(), R.raw.music);
         player.setVolume(1,1);
         player.setLooping(true);
@@ -34,7 +32,6 @@ public class BackgroundMusicService extends Service{
 
     @SuppressLint("WrongConstant")
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this,"Service onStartCommand", Toast.LENGTH_SHORT).show();
         if (player.isPlaying()){
             stopSelf();
         }
@@ -46,7 +43,6 @@ public class BackgroundMusicService extends Service{
 
     public void onDestroy(Intent intent, int startId)
     {
-        Toast.makeText(this,"Service destroyed", Toast.LENGTH_SHORT).show();
         player.stop();
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -12,12 +11,7 @@ import com.mbola.deminer.MainActivity;
 import com.mbola.deminer.R;
 import com.mbola.deminer.classes.Grid;
 
-import java.util.logging.Level;
-
 public class CustomClickListener implements View.OnClickListener {
-
-    private TextView playButton,timer;
-    private int secondsElapsed; // Count the seconds Elapsed
 
     private MainActivity activity;
     private Context context;
@@ -62,15 +56,13 @@ public class CustomClickListener implements View.OnClickListener {
             // Add one after each second
             @Override
             public void onTick(long l) {
-                System.out.println("IT IS TICKING");
                 activity.setSecondsElapsed(activity.getSecondsElapsed()-1);
                 activity.getTimer().setText(String.format("%03d",activity.getSecondsElapsed()));
             }
 
             @Override
             public void onFinish() {
-                //isGameOver = true;
-                //Toast.makeText(getApplicationContext(),"Game is Over : Time is UP",Toast.LENGTH_SHORT).show();
+                activity.setGameOver(true);
             }
         };
 

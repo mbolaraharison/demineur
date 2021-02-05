@@ -2,22 +2,23 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/demineur_background">
 
     <TextView
         android:id="@+id/score_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/you_win"
-        android:textSize="50sp"
+        android:text="@string/scores_history_label"
+        android:textSize="30dp"
         android:layout_gravity="center"/>
 
     <TextView
         android:id="@+id/score_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/this_is_your_score"
-        android:textSize="25sp"
+        android:text="@string/your_score_label"
+        android:textSize="20dp"
         android:layout_gravity="center"/>
 
     <TextView
@@ -25,10 +26,8 @@
         android:layout_width="80dp"
         android:layout_height="26dp"
         android:layout_gravity="center"
-        android:textSize="25sp"
-
+        android:textSize="15dp"
         />
-
 
     <ListView
         android:id="@+id/score_list"
@@ -42,11 +41,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cancel" />
-
-
-
-
-
 
 </LinearLayout>
 

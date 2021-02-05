@@ -1,15 +1,10 @@
 package com.mbola.deminer.listeners;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
-import android.widget.PopupWindow;
-import android.widget.Toast;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.mbola.deminer.MainActivity;
-import com.mbola.deminer.R;
+import com.mbola.deminer.classes.CustomPopUp;
 
 public class ResultsListListener implements View.OnClickListener {
 
@@ -23,11 +18,14 @@ public class ResultsListListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        this.activity.getCustomPopUp().setScore("ICI");
+        this.activity.setCustomPopUp(new CustomPopUp(this.activity));
+        if (this.activity.isGameWon()) {
+            this.activity.getCustomPopUp().setScore(String.valueOf(this.activity.getSecondsElapsed()));
+        }
         this.activity.getCustomPopUp().getCancel_Button().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Results closed",Toast.LENGTH_SHORT).show();
+                activity.getCustomPopUp().setScore("NaN");
                 activity.getCustomPopUp().dismiss();
             }
         });

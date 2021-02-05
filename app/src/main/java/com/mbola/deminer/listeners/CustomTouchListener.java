@@ -10,7 +10,12 @@ import com.mbola.deminer.MainActivity;
 import com.mbola.deminer.R;
 import com.mbola.deminer.classes.Cell;
 import com.mbola.deminer.classes.Grid;
+import com.mbola.deminer.classes.Result;
 import com.mbola.deminer.views.PolygonImageView;
+
+import java.util.List;
+
+import services.Service;
 
 public class CustomTouchListener implements View.OnTouchListener {
 
@@ -52,9 +57,11 @@ public class CustomTouchListener implements View.OnTouchListener {
             System.out.println("ID : "+cell.getPolygonImageView().getId()+" IS REVEALED : "+cell.isRevealed()+" HAS BOMB : "+cell.isHasBomb());
         };
 
-        if (grid.isGameWon()) {
+        if (grid.isGameWon() && !this.activity.isGameWon()) {
             this.activity.getCounter().cancel();
             this.activity.setGameWon(true);
+            Service.addResultToDb(this.activity, new Result(this.activity.getSelectedLevel(), this.activity.getSecondsElapsed()));
+            this.activity.setResultsList(Service.getAllResultsFromDb(this.activity));
             // Set game status to WON
             this.activity.getGameStatus().setText(R.string.game_status_won);
             for (int i = 0; i < this.grid.getCells().size(); i++) {
