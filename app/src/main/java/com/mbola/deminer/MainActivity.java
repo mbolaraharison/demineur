@@ -79,8 +79,23 @@ public class MainActivity extends AppCompatActivity {
 
         // Handle music background
         musicInent = new Intent(getApplicationContext(), BackgroundMusicService.class);
-        startService(new Intent(getApplicationContext(),BackgroundMusicService.class));
+        startService(musicInent);
     }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+        startService(musicInent);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopService(musicInent);
+    }
+
+
 
 
 }

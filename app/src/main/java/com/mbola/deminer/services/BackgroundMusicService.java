@@ -41,8 +41,10 @@ public class BackgroundMusicService extends Service{
         else {
             player.start();
         }
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
+
+
 
     public void onDestroy(Intent intent, int startId)
     {
