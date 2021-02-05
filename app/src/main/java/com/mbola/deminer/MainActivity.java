@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Service.addResultToDb(this, new Result(1, 45));
 
-        Service.truncateTable(this);
+        //Service.truncateTable(this);
 
 //        List<Result> res = Service.getAllResultsFromDb(this);
 //
