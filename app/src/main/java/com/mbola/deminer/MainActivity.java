@@ -64,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
         timerStarted = false;
         isGameOver = false;
         isGameWon = false;
+
+        // Handle music background
+        musicInent = new Intent(getApplicationContext(), BackgroundMusicService.class);
+        startService(new Intent(getApplicationContext(),BackgroundMusicService.class));
     }
 
     public int[] getWindowDimensions() {
@@ -96,13 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void setTimer(TextView timer) {
         this.timer = timer;
-        for (int i = 0; i < grid.getCells().size(); i++) {
-            grid.getCells().get(i).getPolygonImageView().setOnTouchListener(new CustomTouchListener(grid, grid.getCells().get(i)));
-        }
-
-        // Handle music background
-        musicInent = new Intent(getApplicationContext(), BackgroundMusicService.class);
-        startService(new Intent(getApplicationContext(),BackgroundMusicService.class));
     }
 
     public int getSecondsElapsed() {
