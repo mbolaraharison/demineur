@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         // Open or create database
         this.db = this.openOrCreateDatabase(DB_NAME, MODE_PRIVATE, null);
 
+        Service.createResultsTableIfNotExists(this);
+
         this.resultsList = Service.getAllResultsFromDb(this);
 
         this.customPopUp = new CustomPopUp(this);
