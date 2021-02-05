@@ -1,12 +1,23 @@
 package com.mbola.deminer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.database.MatrixCursor;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,11 +26,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.mbola.deminer.classes.Grid;
+import com.mbola.deminer.classes.customPopUp;
+import com.mbola.deminer.classes.scoreItem;
+import com.mbola.deminer.classes.scoreItemAdapter;
 import com.mbola.deminer.listeners.CustomClickListener;
 import com.mbola.deminer.listeners.CustomTouchListener;
 import com.mbola.deminer.listeners.ResultsListListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import services.Service;
 
@@ -35,10 +51,19 @@ public class MainActivity extends AppCompatActivity {
     private boolean isGameWon;
     private boolean isGameOver;
 
+
+    private Button scoreButton;
+    private MainActivity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.activity = this;
+
+
+
 
         LEVEL_PARAMETERS = new HashMap<>();
         LEVEL_PARAMETERS.put(1, new int[]{60000, 8, 5});
@@ -46,13 +71,40 @@ public class MainActivity extends AppCompatActivity {
         LEVEL_PARAMETERS.put(3, new int[]{25000, 10, 25});
 
         playButton = findViewById(R.id.activity_main_smiley);
+        scoreButton = findViewById(R.id.Score);
+
         resultsList = findViewById(R.id.link_results);
         timer = findViewById(R.id.activity_main_timer);
 
         secondsElapsed = 0;
         playButton.setOnClickListener(new CustomClickListener(this, this, playButton, timer, secondsElapsed, 3));
 
-        resultsList.setOnClickListener(new ResultsListListener(this));
+
+        scoreButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                final customPopUp customPopUp = new customPopUp(activity);
+                customPopUp.setScore("Mettre ici le score générer par le chrono");
+
+                customPopUp.getCancel_Button().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getApplicationContext(), "Results closed",Toast.LENGTH_SHORT).show();
+                        customPopUp.dismiss();
+                    }
+                });
+                customPopUp.build();
+            }
+        });
+
+        List<scoreItem> scoreItemList = new ArrayList<>();
+        scoreItemList.add(new scoreItem("24/01/2021","54,30"));
+        scoreItemList.add(new scoreItem("02/01/2021","20,30"));
+        scoreItemList.add(new scoreItem("02/02/2021","46,30"));
+
+        ListView scoreListView = findViewById(R.id.score_list);
+        scoreListView.setAdapter(new scoreItemAdapter(this,scoreItemList));
+
 
         timerStarted = false;
         isGameOver = false;

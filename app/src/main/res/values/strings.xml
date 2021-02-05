@@ -5,4 +5,9 @@
     <string name="bomb">💣</string>
     <string name="default_count">000</string>
     <string name="default_game_status">GAME STARTED</string>
+    <string name="cancel">CANCEL</string>
+    <string name="you_win">You win !</string>
+    <string name="this_is_your_score">this is your score</string>
+    <string name="default_score">score du joueur</string>
+    <string name="default_date">date du score</string>
 </resources>
