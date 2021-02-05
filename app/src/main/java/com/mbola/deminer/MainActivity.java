@@ -1,62 +1,138 @@
 package com.mbola.deminer;
 
-import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.DisplayMetrics;
 import android.view.Display;
-import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.mbola.deminer.classes.Grid;
+import com.mbola.deminer.classes.CustomPopUp;
+import com.mbola.deminer.classes.Result;
 import com.mbola.deminer.listeners.CustomClickListener;
-import com.mbola.deminer.listeners.CustomTouchListener;
-import com.mbola.deminer.listeners.ResultsListListener;
+import com.mbola.deminer.listeners.CustomSpinnerSelectListener;
 
 import java.util.HashMap;
+import java.util.List;
+
+import com.mbola.deminer.listeners.ResultsListListener;
+import com.mbola.deminer.services.BackgroundMusicService;
 
 import services.Service;
 
 public class MainActivity extends AppCompatActivity {
 
     private Grid grid;
-    private TextView playButton,timer, resultsList;
+    private TextView bombsNumber, playButton,timer, gameStatus;
     private int secondsElapsed;
     private boolean timerStarted;
     private CountDownTimer counter;
     public static HashMap<Integer, int[]> LEVEL_PARAMETERS;
+    public static String MY_PREFS_NAME = "Results";
 
     private boolean isGameWon;
     private boolean isGameOver;
+    private Intent musicInent;
+
+    private Spinner levelsSpinner;
+    private int selectedLevel = 1;
+
+    private SQLiteDatabase db;
+    public static String DB_NAME = "Results";
+    public static String TABLE_NAME = "results_table";
+
+    private Button scoreButton;
+    private CustomPopUp customPopUp;
+
+    private List<Result> resultsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        System.out.println("LEVEL : "+prefs.getInt("level", 1));
+        selectedLevel = prefs.getInt("level", 1);
+
         LEVEL_PARAMETERS = new HashMap<>();
         LEVEL_PARAMETERS.put(1, new int[]{60000, 8, 5});
         LEVEL_PARAMETERS.put(2, new int[]{40000, 9, 10});
         LEVEL_PARAMETERS.put(3, new int[]{25000, 10, 25});
 
+        bombsNumber = findViewById(R.id.activity_main_bombs_number);
         playButton = findViewById(R.id.activity_main_smiley);
-        resultsList = findViewById(R.id.link_results);
+        gameStatus = findViewById(R.id.game_status_label);
+        scoreButton = findViewById(R.id.Score);
+
         timer = findViewById(R.id.activity_main_timer);
+        levelsSpinner = findViewById(R.id.levels_spinner);
 
-        secondsElapsed = 0;
-        playButton.setOnClickListener(new CustomClickListener(this, this, playButton, timer, secondsElapsed, 3));
+        // Open or create database
+        this.db = this.openOrCreateDatabase(DB_NAME, MODE_PRIVATE, null);
 
-        resultsList.setOnClickListener(new ResultsListListener(this));
+        Service.createResultsTableIfNotExists(this);
+
+        this.resultsList = Service.getAllResultsFromDb(this);
+
+        this.customPopUp = new CustomPopUp(this);
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                        R.array.level_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        levelsSpinner.setAdapter(adapter);
+
+        levelsSpinner.setSelection(selectedLevel-1);
+
+        levelsSpinner.setOnItemSelectedListener(new CustomSpinnerSelectListener(this));
+
+        secondsElapsed = 60;
+        playButton.setOnClickListener(new CustomClickListener(this, playButton, timer, secondsElapsed));
+
+        scoreButton.setOnClickListener(new ResultsListListener(this));
 
         timerStarted = false;
         isGameOver = false;
         isGameWon = false;
+
+        // Handle music background
+        musicInent = new Intent(getApplicationContext(), BackgroundMusicService.class);
+        startService(musicInent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(this.musicInent);
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putInt("level", this.selectedLevel);
+        editor.apply();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopService(this.musicInent);
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putInt("level", this.selectedLevel);
+        editor.apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startService(this.musicInent);
     }
 
     public int[] getWindowDimensions() {
@@ -129,5 +205,69 @@ public class MainActivity extends AppCompatActivity {
 
     public void setGameOver(boolean gameOver) {
         isGameOver = gameOver;
+    }
+
+    public Intent getMusicInent() {
+        return musicInent;
+    }
+
+    public void setMusicInent(Intent musicInent) {
+        this.musicInent = musicInent;
+    }
+
+    public Spinner getLevelsSpinner() {
+        return levelsSpinner;
+    }
+
+    public void setLevelsSpinner(Spinner levelsSpinner) {
+        this.levelsSpinner = levelsSpinner;
+    }
+
+    public int getSelectedLevel() {
+        return selectedLevel;
+    }
+
+    public void setSelectedLevel(int selectedLevel) {
+        this.selectedLevel = selectedLevel;
+    }
+
+    public TextView getBombsNumber() {
+        return bombsNumber;
+    }
+
+    public void setBombsNumber(TextView bombsNumber) {
+        this.bombsNumber = bombsNumber;
+    }
+
+    public TextView getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(TextView gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+    public SQLiteDatabase getDb() {
+        return db;
+    }
+
+    public void setDb(SQLiteDatabase db) {
+        this.db = db;
+    }
+
+    public CustomPopUp getCustomPopUp() {
+        return customPopUp;
+    }
+
+    public void setCustomPopUp(CustomPopUp customPopUp) {
+        this.customPopUp = customPopUp;
+    }
+
+    public List<Result> getResultsList() {
+        return resultsList;
+    }
+
+    public void setResultsList(List<Result> resultsList) {
+        this.resultsList = resultsList;
     }
 }

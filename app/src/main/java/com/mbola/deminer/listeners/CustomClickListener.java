@@ -1,10 +1,10 @@
 package com.mbola.deminer.listeners;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -12,31 +12,24 @@ import com.mbola.deminer.MainActivity;
 import com.mbola.deminer.R;
 import com.mbola.deminer.classes.Grid;
 
-import java.util.logging.Level;
-
 public class CustomClickListener implements View.OnClickListener {
-
-    private TextView playButton,timer;
-    private int secondsElapsed; // Count the seconds Elapsed
 
     private MainActivity activity;
     private Context context;
     private int level;
-    //private Level
 
-    public CustomClickListener(Context context, MainActivity activity, TextView textView, TextView timer, int secondsElapsed, int level) {
+    public CustomClickListener(MainActivity activity, TextView textView, TextView timer, int secondsElapsed) {
 
         this.activity = activity;
-        this.context = context;
-        this.level = level;
+        this.context = this.activity.getBaseContext();
 
-        /*this.playButton = textView;
-        this.timer = timer;
-        this.secondsElapsed = secondsElapsed;*/
     }
 
     @Override
     public void onClick(View v) {
+        // Here we set the selected level
+        this.level = this.activity.getSelectedLevel();
+
         this.activity.setGameOver(false);
         this.activity.setGameWon(false);
 
@@ -45,11 +38,15 @@ public class CustomClickListener implements View.OnClickListener {
 
         // We place grid
         this.placeGridOnLayout();
+
+        // Reset game status
+        this.activity.getGameStatus().setText(R.string.game_status_default);
+        activity.getGameStatus().setTextColor(Color.DKGRAY);
     }
 
     private void resetTimer() {
         this.activity.setTimerStarted(false);
-        this.activity.setSecondsElapsed(0);
+        this.activity.setSecondsElapsed((MainActivity.LEVEL_PARAMETERS.get(this.level))[0]/1000);
 
         if (this.activity.getCounter() != null) {
             this.activity.getCounter().cancel();
@@ -61,15 +58,18 @@ public class CustomClickListener implements View.OnClickListener {
             // Add one after each second
             @Override
             public void onTick(long l) {
-                System.out.println("IT IS TICKING");
-                activity.setSecondsElapsed(activity.getSecondsElapsed()+1);
+                activity.setSecondsElapsed(activity.getSecondsElapsed()-1);
                 activity.getTimer().setText(String.format("%03d",activity.getSecondsElapsed()));
             }
 
             @Override
             public void onFinish() {
-                //isGameOver = true;
-                //Toast.makeText(getApplicationContext(),"Game is Over : Time is UP",Toast.LENGTH_SHORT).show();
+                activity.setGameOver(true);
+                if (!activity.isGameWon()) {
+                    activity.getGrid().revealBombs(false);
+                    activity.getGameStatus().setText(R.string.game_status_over);
+                    activity.getGameStatus().setTextColor(Color.RED);
+                }
             }
         };
 
@@ -83,7 +83,7 @@ public class CustomClickListener implements View.OnClickListener {
 
         int[] windowDimensions = activity.getWindowDimensions();
 
-        Grid grid = new Grid(context, templateView, windowDimensions, layout, (MainActivity.LEVEL_PARAMETERS.get(this.level))[1], (MainActivity.LEVEL_PARAMETERS.get(this.level))[2]);
+        Grid grid = new Grid(this.activity, templateView, windowDimensions, layout, (MainActivity.LEVEL_PARAMETERS.get(this.level))[1], (MainActivity.LEVEL_PARAMETERS.get(this.level))[2]);
 
         activity.setGrid(grid);
 

@@ -1,14 +1,14 @@
 package com.mbola.deminer.classes;
 
 import android.content.Context;
-import android.view.Gravity;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 
+import com.mbola.deminer.MainActivity;
 import com.mbola.deminer.R;
 
 import java.util.ArrayList;
@@ -21,13 +21,11 @@ public class Grid {
     private List<Cell> cells;
     private int bombsNumber;
 
-    public Grid(Context context, View templateView, int[] windowDimensions, ViewGroup viewGroup, int size, int bombsNumber) {
+    public Grid(MainActivity activity, View templateView, int[] windowDimensions, ViewGroup viewGroup, int size, int bombsNumber) {
+        Context context = activity.getBaseContext();
+
         // Remove views if they already exist
-        int id = 1;
-        while (((ConstraintLayout)viewGroup).getViewById(id) != null) {
-            viewGroup.removeView(((ConstraintLayout)viewGroup).getViewById(id));
-            id++;
-        }
+        Service.removeViewsFromGrid(activity, viewGroup);
 
         this.bombsNumber = bombsNumber;
         this.cells = new ArrayList<>(size*size);
@@ -115,14 +113,13 @@ public class Grid {
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) templateView.getLayoutParams();
             layoutParams.topMargin = 100;
             layoutParams.leftMargin = leftMargin;
-            //this.cells.get(i).getPolygonImageView().setVisibility(View.GONE);
 
             viewGroup.addView(this.cells.get(i).getPolygonImageView(), layoutParams);
         }
-        // Put bombs
-        this.putBombs(bombsNumber);
-        // Count neighbouring bombs per cell
-        this.countNeighbouringBombsPerCell();
+
+        LinearLayout footerLayout = activity.findViewById(R.id.footer_layout);
+        ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) footerLayout.getLayoutParams();
+        layoutParams1.topMargin = (int) this.getGridHeight(context, size) + 100;
     }
 
     public List<Cell> getCells() {
@@ -145,6 +142,16 @@ public class Grid {
         for (int i=0; i<number; i++) {
             int j = new Random().nextInt(this.cells.size());
             while (this.cells.get(j).isHasBomb()) {
+                j = new Random().nextInt(this.cells.size());
+            }
+            this.cells.get(j).setHasBomb(true);
+        }
+    }
+
+    public void putBombsExceptAtPosition(int number, int index) {
+        for (int i=0; i<number; i++) {
+            int j = new Random().nextInt(this.cells.size());
+            while (this.cells.get(j).isHasBomb() || j==index) {
                 j = new Random().nextInt(this.cells.size());
             }
             this.cells.get(j).setHasBomb(true);
@@ -191,6 +198,21 @@ public class Grid {
         return ((Service.toPixel(context, 50)*size)-(Service.toPixel(context, 20)*(size-2)));
     }
 
-    //public float getGridHeight(Context context, int size)
+    public float getGridHeight(Context context, int size) {
+        return ((Service.toPixel(context, 50)*size)+(Service.toPixel(context, 20)*(size+2)));
+    }
+
+    public void revealBombs(boolean isWon) {
+        for (int i=0; i<this.cells.size(); i++) {
+            if (this.cells.get(i).isHasBomb() && !this.cells.get(i).isRevealed()) {
+                this.cells.get(i).setRevealed(true);
+                if (isWon == true) {
+                    this.cells.get(i).setColor(Color.GREEN);
+                } else{
+                    this.cells.get(i).setColor(Color.RED);
+                }
+            }
+        }
+    }
 
 }

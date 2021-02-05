@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/popup_background">
+
+    <TextView
+        android:id="@+id/score_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/scores_history_label"
+        android:textSize="30dp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/score_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/your_score_label"
+        android:textSize="20dp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="80dp"
+        android:layout_height="26dp"
+        android:layout_gravity="center"
+        android:textSize="15dp"
+        />
+
+    <ListView
+        android:id="@+id/score_list"
+        android:layout_width="wrap_content"
+        android:layout_height="500dp"
+        android:layout_gravity="" />
+
+    <Button
+        android:layout_gravity="center"
+        android:id="@+id/cancel_Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel" />
+
+</LinearLayout>
+

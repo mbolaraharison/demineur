@@ -1,15 +1,17 @@
 package com.mbola.deminer.listeners;
 
 import android.graphics.Color;
-import android.os.CountDownTimer;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
 import com.mbola.deminer.MainActivity;
+import com.mbola.deminer.R;
 import com.mbola.deminer.classes.Cell;
 import com.mbola.deminer.classes.Grid;
+import com.mbola.deminer.classes.Result;
 import com.mbola.deminer.views.PolygonImageView;
+
+import services.Service;
 
 public class CustomTouchListener implements View.OnTouchListener {
 
@@ -32,14 +34,20 @@ public class CustomTouchListener implements View.OnTouchListener {
                 // Start the count down
                 this.activity.getCounter().start();
                 this.activity.setTimerStarted(true);
+                // Set game status to STARTED
+                this.activity.getGameStatus().setText(R.string.game_status_started);
+
+                this.grid.putBombsExceptAtPosition((MainActivity.LEVEL_PARAMETERS.get(this.activity.getSelectedLevel()))[2], this.grid.getCells().indexOf(this.cell));
+                this.grid.countNeighbouringBombsPerCell();
             }
 
             if (!cell.isRevealed()) {
                 if (cell.isHasBomb()) {
                     this.activity.getCounter().cancel();
-                    this.cell.setRevealed(true);
-                    this.cell.setColor(Color.RED);
                     this.activity.setGameOver(true);
+                    activity.getGrid().revealBombs(false);
+                    this.activity.getGameStatus().setText(R.string.game_status_over);
+                    activity.getGameStatus().setTextColor(Color.RED);
                 } else {
                     cell.revealEmptiesRecursively();
                 }
@@ -47,14 +55,15 @@ public class CustomTouchListener implements View.OnTouchListener {
             System.out.println("ID : "+cell.getPolygonImageView().getId()+" IS REVEALED : "+cell.isRevealed()+" HAS BOMB : "+cell.isHasBomb());
         };
 
-        if (grid.isGameWon()) {
+        if (grid.isGameWon() && !this.activity.isGameWon()) {
             this.activity.getCounter().cancel();
             this.activity.setGameWon(true);
-            for (int i = 0; i < this.grid.getCells().size(); i++) {
-                if (this.grid.getCells().get(i).isHasBomb()) {
-                    this.grid.getCells().get(i).setColor(Color.GREEN);
-                }
-            }
+            Service.addResultToDb(this.activity, new Result(this.activity.getSelectedLevel(), this.activity.getSecondsElapsed()));
+            this.activity.setResultsList(Service.getAllResultsFromDb(this.activity));
+            // Set game status to WON
+            activity.getGrid().revealBombs(true);
+            this.activity.getGameStatus().setText(R.string.game_status_won);
+            activity.getGameStatus().setTextColor(Color.GREEN);
         }
         return true;
     }

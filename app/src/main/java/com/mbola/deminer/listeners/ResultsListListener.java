@@ -1,27 +1,33 @@
 package com.mbola.deminer.listeners;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
-import android.widget.PopupWindow;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.mbola.deminer.R;
+import com.mbola.deminer.MainActivity;
+import com.mbola.deminer.classes.CustomPopUp;
 
 public class ResultsListListener implements View.OnClickListener {
 
-    private Activity activity;
-    private ConstraintLayout layout;
+    private MainActivity activity;
+    private Context context;
 
-    public ResultsListListener(Activity activity) {
+    public ResultsListListener(MainActivity activity) {
         this.activity = activity;
-        this.layout = activity.findViewById(R.id.layout);
+        this.context = this.activity.getBaseContext();
     }
 
     @Override
     public void onClick(View v) {
-        PopupWindow popup = new PopupWindow(this.activity);
-        popup.setContentView(this.layout);
+        this.activity.setCustomPopUp(new CustomPopUp(this.activity));
+        if (this.activity.isGameWon()) {
+            this.activity.getCustomPopUp().setScore(String.valueOf(this.activity.getSecondsElapsed()));
+        }
+        this.activity.getCustomPopUp().getCancel_Button().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getCustomPopUp().dismiss();
+            }
+        });
+        activity.getCustomPopUp().build();
     }
 }

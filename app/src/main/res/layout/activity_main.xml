@@ -5,7 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layout"
+    android:background="@drawable/demineur_background"
     tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/level_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <TextView
+            android:id="@+id/level_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:text="Level"
+            android:textSize="20dp" />
+        <Spinner
+            android:id="@+id/levels_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -16,9 +43,8 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
         <TextView
-            android:id="@+id/activity_main_flagsleft"
+            android:id="@+id/activity_main_bombs_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
@@ -60,30 +86,36 @@
             app:poly_shadow="true"
             app:poly_shadow_color="#f01"
             app:poly_vertices="6"
-            tools:ignore="MissingConstraints"></com.mbola.deminer.views.PolygonImageView>
+            tools:ignore="MissingConstraints"/>
 
     <LinearLayout
-        android:id="@+id/linearLayout_activity_main_text_status"
+        android:id="@+id/footer_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="50dp"
+        app:layout_constraintTop_toTopOf="@id/kitty01"
+        app:layout_constraintBottom_toBottomOf="@id/kitty01"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
         <TextView
-            android:id="@+id/activity_main_text_status"
+            android:id="@+id/game_status_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
-            android:text="@string/default_game_status"
-            android:textSize="25dp" />
-        <TextView
-            android:id="@+id/link_results"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RESULTS LIST"
-            android:textSize="25dp" />
+            android:text="@string/game_status_default"
+            android:textSize="20dp" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/Score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="13dp"
+        android:text="Score"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
