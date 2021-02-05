@@ -10,9 +10,18 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -51,6 +60,13 @@ public class MainActivity extends AppCompatActivity {
     public static String DB_NAME = "Results";
     public static String TABLE_NAME = "results_table";
 
+    private PopupWindow popupWindow;
+    private LayoutInflater layoutInflater;
+    private LinearLayout linearLayout;
+
+    private ListView lst;
+    String [] local = {"asdf","Sgadf","adfhtr","trdbfa"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         secondsElapsed = 60;
         playButton.setOnClickListener(new CustomClickListener(this, playButton, timer, secondsElapsed));
 
-        resultsList.setOnClickListener(new ResultsListListener(this));
+        //resultsList.setOnClickListener(new ResultsListListener(this));
 
         timerStarted = false;
         isGameOver = false;
@@ -93,15 +109,45 @@ public class MainActivity extends AppCompatActivity {
         // Open or create database
         this.db = this.openOrCreateDatabase(DB_NAME, MODE_PRIVATE, null);
 
-        Service.addResultToDb(this, new Result(1, 45));
+        //Service.addResultToDb(this, new Result(1, 45));
 
-        //Service.truncateTable(this);
+        Service.truncateTable(this);
 
-        List<Result> res = Service.getAllResultsFromDb(this);
+//        List<Result> res = Service.getAllResultsFromDb(this);
+//
+//        for (int i=0; i<res.size(); i++) {
+//            System.out.println("DATE : "+res.get(i).getDate()+" LEVEL : "+res.get(i).getLevel()+" SCORE : "+res.get(i).getScore());
+//        }
 
-        for (int i=0; i<res.size(); i++) {
-            System.out.println("DATE : "+res.get(i).getDate()+" LEVEL : "+res.get(i).getLevel()+" SCORE : "+res.get(i).getScore());
-        }
+        //for listView 1
+        linearLayout  = (LinearLayout) findViewById(R.id.linear);
+        resultsList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layoutInflater = (LayoutInflater) getApplication().getSystemService(LAYOUT_INFLATER_SERVICE);
+                ViewGroup container  = (ViewGroup) layoutInflater.inflate(R.layout.list_view,null);
+
+                popupWindow = new PopupWindow(container,800,1300,true);
+                lst = container.findViewById(R.id.listView1);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, local);
+                lst.setAdapter(adapter);
+                lst.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Toast.makeText(MainActivity.this, local[i],Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                popupWindow.showAsDropDown(resultsList);
+                container.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent event) {
+                        popupWindow.dismiss();
+                        return false;
+                    }
+                });
+            }
+        });
     }
 
     public int[] getWindowDimensions() {
