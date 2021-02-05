@@ -1,6 +1,7 @@
 package com.mbola.deminer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean timerStarted;
     private CountDownTimer counter;
     public static HashMap<Integer, int[]> LEVEL_PARAMETERS;
+    public static String MY_PREFS_NAME = "Results";
 
     private boolean isGameWon;
     private boolean isGameOver;
@@ -56,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        System.out.println("LEVEL : "+prefs.getInt("level", 1));
+        selectedLevel = prefs.getInt("level", 1);
 
         LEVEL_PARAMETERS = new HashMap<>();
         LEVEL_PARAMETERS.put(1, new int[]{60000, 8, 5});
@@ -86,6 +92,9 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         levelsSpinner.setAdapter(adapter);
+
+        levelsSpinner.setSelection(selectedLevel-1);
+
         levelsSpinner.setOnItemSelectedListener(new CustomSpinnerSelectListener(this));
 
         secondsElapsed = 60;
@@ -99,7 +108,31 @@ public class MainActivity extends AppCompatActivity {
 
         // Handle music background
         musicInent = new Intent(getApplicationContext(), BackgroundMusicService.class);
-        startService(new Intent(getApplicationContext(),BackgroundMusicService.class));
+        startService(musicInent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(this.musicInent);
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putInt("level", this.selectedLevel);
+        editor.apply();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopService(this.musicInent);
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putInt("level", this.selectedLevel);
+        editor.apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startService(this.musicInent);
     }
 
     public int[] getWindowDimensions() {

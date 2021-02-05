@@ -1,6 +1,7 @@
 package com.mbola.deminer.listeners;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ public class CustomClickListener implements View.OnClickListener {
 
         // Reset game status
         this.activity.getGameStatus().setText(R.string.game_status_default);
+        activity.getGameStatus().setTextColor(Color.DKGRAY);
     }
 
     private void resetTimer() {
@@ -63,6 +65,11 @@ public class CustomClickListener implements View.OnClickListener {
             @Override
             public void onFinish() {
                 activity.setGameOver(true);
+                if (!activity.isGameWon()) {
+                    activity.getGrid().revealBombs(false);
+                    activity.getGameStatus().setText(R.string.game_status_over);
+                    activity.getGameStatus().setTextColor(Color.RED);
+                }
             }
         };
 

@@ -12,9 +12,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_date"
-            android:textColor="@android:color/holo_green_dark"
+            android:textColor="@android:color/holo_orange_dark"
             android:textSize="15dp"
             android:layout_marginRight="20dp"
+            android:layout_weight="1"
             />
         <TextView
             android:id="@+id/level"
@@ -24,6 +25,7 @@
             android:textColor="@android:color/black"
             android:textSize="15dp"
             android:layout_marginRight="20dp"
+            android:layout_weight="1"
             />
         <TextView
             android:id="@+id/score"
@@ -32,6 +34,7 @@
             android:text="@string/default_score"
             android:textColor="@android:color/black"
             android:textSize="15dp"
+            android:layout_weight="1"
             />
     </LinearLayout>
 </LinearLayout>

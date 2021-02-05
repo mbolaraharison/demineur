@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical"
-    android:background="@drawable/demineur_background">
+    android:background="@drawable/popup_background">
 
     <TextView
         android:id="@+id/score_title"

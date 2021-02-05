@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Point;
-import android.os.CountDownTimer;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.ViewGroup;
@@ -12,28 +11,10 @@ import android.widget.LinearLayout;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.mbola.deminer.MainActivity;
 import com.mbola.deminer.R;
 import com.mbola.deminer.classes.Result;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONStringer;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.reflect.Type;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,8 +64,7 @@ public class Service {
 
     public static List<Result> getAllResultsFromDb (MainActivity activity) {
         /*retrieve data from database */
-        System.out.println("CURSOR : "+activity.getDb());
-        Cursor c = activity.getDb().rawQuery("SELECT * FROM " + MainActivity.TABLE_NAME +" ORDER BY date desc", null);
+        Cursor c = activity.getDb().rawQuery("SELECT * FROM " + MainActivity.TABLE_NAME +" ORDER BY date desc LIMIT 20", null);
 
         int dateColumn = c.getColumnIndex("date");
         int levelColumn = c.getColumnIndex("level");

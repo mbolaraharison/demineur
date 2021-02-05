@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import com.mbola.deminer.R;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 public class ResultsListAdapter extends BaseAdapter {
@@ -52,10 +50,10 @@ public class ResultsListAdapter extends BaseAdapter {
         itemDateView.setText(itemDate);
 
         TextView itemLevelView = view.findViewById(R.id.level);
-        itemLevelView.setText(itemLevel);
+        itemLevelView.setText("LEVEL : "+itemLevel);
 
         TextView itemScoreView = view.findViewById(R.id.score);
-        itemScoreView.setText(itemScore);
+        itemScoreView.setText("SCORE : "+itemScore);
 
         return view;
     }

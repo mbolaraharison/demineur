@@ -1,6 +1,5 @@
 package com.mbola.deminer.classes;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.widget.Button;
 import android.widget.ListView;
@@ -8,11 +7,6 @@ import android.widget.TextView;
 
 import com.mbola.deminer.MainActivity;
 import com.mbola.deminer.R;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import services.Service;
 
 public class CustomPopUp extends Dialog {
 
@@ -41,5 +35,13 @@ public class CustomPopUp extends Dialog {
     public void build(){
         show();
         scoreView.setText(score);
+    }
+
+    public TextView getScoreView() {
+        return scoreView;
+    }
+
+    public void setScoreView(TextView scoreView) {
+        this.scoreView = scoreView;
     }
 }
