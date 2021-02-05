@@ -1,12 +1,16 @@
 package com.mbola.deminer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Point;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
+import android.provider.Settings;
 import android.view.Display;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +26,7 @@ import com.mbola.deminer.listeners.ResultsListListener;
 import java.util.HashMap;
 
 import services.Service;
+import com.mbola.deminer.services.BackgroundMusicService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isGameWon;
     private boolean isGameOver;
+    private Intent musicInent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +96,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void setTimer(TextView timer) {
         this.timer = timer;
+        for (int i = 0; i < grid.getCells().size(); i++) {
+            grid.getCells().get(i).getPolygonImageView().setOnTouchListener(new CustomTouchListener(grid, grid.getCells().get(i)));
+        }
+
+        // Handle music background
+        musicInent = new Intent(getApplicationContext(), BackgroundMusicService.class);
+        startService(new Intent(getApplicationContext(),BackgroundMusicService.class));
     }
 
     public int getSecondsElapsed() {
