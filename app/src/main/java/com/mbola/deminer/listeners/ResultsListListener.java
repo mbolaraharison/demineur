@@ -25,7 +25,6 @@ public class ResultsListListener implements View.OnClickListener {
         this.activity.getCustomPopUp().getCancel_Button().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.getCustomPopUp().setScore("NaN");
                 activity.getCustomPopUp().dismiss();
             }
         });
