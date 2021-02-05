@@ -1,49 +1,38 @@
 package com.mbola.deminer;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mbola.deminer.classes.Grid;
-import com.mbola.deminer.classes.Result;
+import com.mbola.deminer.classes.CustomPopUp;
 import com.mbola.deminer.listeners.CustomClickListener;
 import com.mbola.deminer.listeners.CustomSpinnerSelectListener;
-import com.mbola.deminer.listeners.ResultsListListener;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
-import services.Service;
+import com.mbola.deminer.listeners.ResultsListListener;
 import com.mbola.deminer.services.BackgroundMusicService;
-
-import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity {
 
     private Grid grid;
-    private TextView bombsNumber, playButton,timer, gameStatus, resultsList;
+    private TextView bombsNumber, playButton,timer, gameStatus;
     private int secondsElapsed;
     private boolean timerStarted;
     private CountDownTimer counter;
@@ -60,12 +49,8 @@ public class MainActivity extends AppCompatActivity {
     public static String DB_NAME = "Results";
     public static String TABLE_NAME = "results_table";
 
-    private PopupWindow popupWindow;
-    private LayoutInflater layoutInflater;
-    private LinearLayout linearLayout;
-
-    private ListView lst;
-    String [] local = {"asdf","Sgadf","adfhtr","trdbfa"};
+    private Button scoreButton;
+    private CustomPopUp customPopUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +65,12 @@ public class MainActivity extends AppCompatActivity {
         bombsNumber = findViewById(R.id.activity_main_bombs_number);
         playButton = findViewById(R.id.activity_main_smiley);
         gameStatus = findViewById(R.id.game_status_label);
-        resultsList = findViewById(R.id.results_list_label);
+        scoreButton = findViewById(R.id.Score);
+
         timer = findViewById(R.id.activity_main_timer);
         levelsSpinner = findViewById(R.id.levels_spinner);
+
+        this.customPopUp = new CustomPopUp(this);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -97,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
         playButton.setOnClickListener(new CustomClickListener(this, playButton, timer, secondsElapsed));
 
         //resultsList.setOnClickListener(new ResultsListListener(this));
+
+        scoreButton.setOnClickListener(new ResultsListListener(this));
 
         timerStarted = false;
         isGameOver = false;
@@ -118,36 +108,6 @@ public class MainActivity extends AppCompatActivity {
 //        for (int i=0; i<res.size(); i++) {
 //            System.out.println("DATE : "+res.get(i).getDate()+" LEVEL : "+res.get(i).getLevel()+" SCORE : "+res.get(i).getScore());
 //        }
-
-        //for listView 1
-        linearLayout  = (LinearLayout) findViewById(R.id.linear);
-        resultsList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layoutInflater = (LayoutInflater) getApplication().getSystemService(LAYOUT_INFLATER_SERVICE);
-                ViewGroup container  = (ViewGroup) layoutInflater.inflate(R.layout.list_view,null);
-
-                popupWindow = new PopupWindow(container,800,1300,true);
-                lst = container.findViewById(R.id.listView1);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, local);
-                lst.setAdapter(adapter);
-                lst.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Toast.makeText(MainActivity.this, local[i],Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                popupWindow.showAsDropDown(resultsList);
-                container.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent event) {
-                        popupWindow.dismiss();
-                        return false;
-                    }
-                });
-            }
-        });
     }
 
     public int[] getWindowDimensions() {
@@ -268,5 +228,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void setDb(SQLiteDatabase db) {
         this.db = db;
+    }
+
+    public CustomPopUp getCustomPopUp() {
+        return customPopUp;
+    }
+
+    public void setCustomPopUp(CustomPopUp customPopUp) {
+        this.customPopUp = customPopUp;
     }
 }
