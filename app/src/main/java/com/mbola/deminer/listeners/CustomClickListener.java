@@ -22,21 +22,19 @@ public class CustomClickListener implements View.OnClickListener {
     private MainActivity activity;
     private Context context;
     private int level;
-    //private Level
 
-    public CustomClickListener(Context context, MainActivity activity, TextView textView, TextView timer, int secondsElapsed, int level) {
+    public CustomClickListener(MainActivity activity, TextView textView, TextView timer, int secondsElapsed) {
 
         this.activity = activity;
-        this.context = context;
-        this.level = level;
+        this.context = this.activity.getBaseContext();
 
-        /*this.playButton = textView;
-        this.timer = timer;
-        this.secondsElapsed = secondsElapsed;*/
     }
 
     @Override
     public void onClick(View v) {
+        // Here we set the selected level
+        this.level = this.activity.getSelectedLevel();
+
         this.activity.setGameOver(false);
         this.activity.setGameWon(false);
 
@@ -45,11 +43,14 @@ public class CustomClickListener implements View.OnClickListener {
 
         // We place grid
         this.placeGridOnLayout();
+
+        // Reset game status
+        this.activity.getGameStatus().setText(R.string.game_status_default);
     }
 
     private void resetTimer() {
         this.activity.setTimerStarted(false);
-        this.activity.setSecondsElapsed(0);
+        this.activity.setSecondsElapsed((MainActivity.LEVEL_PARAMETERS.get(this.level))[0]/1000);
 
         if (this.activity.getCounter() != null) {
             this.activity.getCounter().cancel();
@@ -62,7 +63,7 @@ public class CustomClickListener implements View.OnClickListener {
             @Override
             public void onTick(long l) {
                 System.out.println("IT IS TICKING");
-                activity.setSecondsElapsed(activity.getSecondsElapsed()+1);
+                activity.setSecondsElapsed(activity.getSecondsElapsed()-1);
                 activity.getTimer().setText(String.format("%03d",activity.getSecondsElapsed()));
             }
 
@@ -83,7 +84,7 @@ public class CustomClickListener implements View.OnClickListener {
 
         int[] windowDimensions = activity.getWindowDimensions();
 
-        Grid grid = new Grid(context, templateView, windowDimensions, layout, (MainActivity.LEVEL_PARAMETERS.get(this.level))[1], (MainActivity.LEVEL_PARAMETERS.get(this.level))[2]);
+        Grid grid = new Grid(this.activity, templateView, windowDimensions, layout, (MainActivity.LEVEL_PARAMETERS.get(this.level))[1], (MainActivity.LEVEL_PARAMETERS.get(this.level))[2]);
 
         activity.setGrid(grid);
 

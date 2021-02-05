@@ -4,5 +4,14 @@
     <string name="flag">🚩</string>
     <string name="bomb">💣</string>
     <string name="default_count">000</string>
-    <string name="default_game_status">GAME STARTED</string>
+    <string name="game_status_default">GAME NOT STARTED</string>
+    <string-array name="level_array">
+        <item>1- [8x8] 5bs 60s</item>
+        <item>2- [9x9] 10bs 40s</item>
+        <item>3- [10x10] 25bs 25s</item>
+    </string-array>
+    <string name="game_status_started">GAME STARTED</string>
+    <string name="game_status_over">GAME OVER</string>
+    <string name="game_status_won">GAME WON</string>
+    <string name="results">Results</string>
 </resources>

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mbola.deminer.MainActivity;
+import com.mbola.deminer.R;
 import com.mbola.deminer.classes.Cell;
 import com.mbola.deminer.classes.Grid;
 import com.mbola.deminer.views.PolygonImageView;
@@ -32,6 +33,8 @@ public class CustomTouchListener implements View.OnTouchListener {
                 // Start the count down
                 this.activity.getCounter().start();
                 this.activity.setTimerStarted(true);
+                // Set game status to STARTED
+                this.activity.getGameStatus().setText(R.string.game_status_started);
             }
 
             if (!cell.isRevealed()) {
@@ -40,6 +43,8 @@ public class CustomTouchListener implements View.OnTouchListener {
                     this.cell.setRevealed(true);
                     this.cell.setColor(Color.RED);
                     this.activity.setGameOver(true);
+                    // Set game status to OVER
+                    this.activity.getGameStatus().setText(R.string.game_status_over);
                 } else {
                     cell.revealEmptiesRecursively();
                 }
@@ -50,6 +55,8 @@ public class CustomTouchListener implements View.OnTouchListener {
         if (grid.isGameWon()) {
             this.activity.getCounter().cancel();
             this.activity.setGameWon(true);
+            // Set game status to WON
+            this.activity.getGameStatus().setText(R.string.game_status_won);
             for (int i = 0; i < this.grid.getCells().size(); i++) {
                 if (this.grid.getCells().get(i).isHasBomb()) {
                     this.grid.getCells().get(i).setColor(Color.GREEN);
